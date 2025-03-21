@@ -3,7 +3,7 @@ package com.ApiRestMiBus.controller.rest;
 import com.ApiRestMiBus.controller.dto.AuthCreateUserRequest;
 import com.ApiRestMiBus.controller.dto.AuthLoginRequest;
 import com.ApiRestMiBus.controller.dto.AuthResponse;
-import com.ApiRestMiBus.model.service.impl.UserDetailServiceImpl;
+import com.ApiRestMiBus.model.service.UserDetailServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.ApiRestMiBus.config;
 
-import com.ApiRestMiBus.model.service.impl.UserDetailServiceImpl;
+import com.ApiRestMiBus.model.service.UserDetailServiceImpl;
 import com.ApiRestMiBus.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +41,26 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/api/rol/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/rol/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/rol/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/rol/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/flotas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/flotas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/flotas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/flotas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/empresas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/empresas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/empresas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/empresas/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/vehiculos/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/vehiculos/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/vehiculos/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/vehiculos/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/gps/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/gps/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/gps/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/gps/**").hasAnyRole("ADMIN");
                     http.requestMatchers("/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html").permitAll();
@@ -65,7 +85,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); //
+        configuration.setAllowedOrigins(List.of("http://localhost:4200","http://localhost:5173","http://137.184.227.202")); //
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
