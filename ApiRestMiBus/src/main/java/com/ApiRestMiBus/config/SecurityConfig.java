@@ -41,10 +41,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
-                    http.requestMatchers(HttpMethod.POST, "/api/rol/**").hasAnyRole("ADMIN");
-                    http.requestMatchers(HttpMethod.GET, "/api/rol/**").hasAnyRole("ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/api/rol/**").hasAnyRole("ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/api/rol/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/roles/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/roles/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/roles/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/roles/**").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.POST, "/api/flotas/**").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.GET, "/api/flotas/**").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.PUT, "/api/flotas/**").hasAnyRole("ADMIN");

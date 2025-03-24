@@ -12,10 +12,6 @@ import java.util.List;
 @Repository
 public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
 
-    @Query("select o from RoleEntity o")
-    Page<RoleEntity> findAllRoles(Pageable pageable);
-
-    //List<RoleEntity> findRoleEntitiesByRoleEnumIn(List<String> roleNames);
-    List<RoleEntity> findRoleEntitiesByRoleNameIn(List<String> roleNames);
+    List<RoleEntity> findByRoleNameIn(List<String> roleNames);
     List<RoleEntity> findByRoleName(String name);
 }

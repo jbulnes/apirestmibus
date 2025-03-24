@@ -15,27 +15,31 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Page<RoleEntity> getAllRoles(Pageable pageable){
-        return roleRepository.findAllRoles(pageable);
+    public Page<RoleEntity> findAll(Pageable pageable){
+        return roleRepository.findAll(pageable);
     }
 
-    public Optional<RoleEntity> getRoleById(Long id){
+    public Optional<RoleEntity> findById(Long id){
         return roleRepository.findById(id);
     }
 
-    public List<RoleEntity> getByRoleName(String name){
+    public List<RoleEntity> findByRoleName(String name){
         return roleRepository.findByRoleName(name);
     }
 
-    public List<RoleEntity> getRoles(){
+    public List<RoleEntity> findAll(){
         return roleRepository.findAll();
     }
 
-    public RoleEntity save(RoleEntity role){
+    public RoleEntity create(RoleEntity role){
         return roleRepository.save(role);
     }
 
-    public void delete(Long id){
+    public RoleEntity update(Long id, RoleEntity roleUpdate){
+        return roleRepository.save(roleUpdate);
+    }
+
+    public void deleteById(Long id){
         roleRepository.deleteById(id);
     }
 

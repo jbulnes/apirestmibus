@@ -1,5 +1,7 @@
 package com.ApiRestMiBus.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -46,10 +48,12 @@ public class FlotaEntity {
     @ManyToOne
     @JoinColumn(name = "id_empresa", nullable = false)
     @NotNull(message = "El idEmpresa no puede ser nulo.")
-    @Positive(message = "El idEmpresa debe ser positivo.")
+    @JsonBackReference(value = "empresa-flota")
     private EmpresaEntity empresa;
 
     @OneToMany(mappedBy = "flota", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonBackReference(value = "flota-vehiculos")
+    @JsonIgnoreProperties("flota")
     private List<VehiculoEntity> vehiculos;
     
 }

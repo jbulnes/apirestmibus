@@ -1,5 +1,6 @@
 package com.ApiRestMiBus.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -56,7 +57,7 @@ public class VehiculoEntity {
     @ManyToOne
     @JoinColumn(name = "id_flota", nullable = false)
     @NotNull(message = "El idFlota no puede ser nulo.")
-    @Positive(message = "El idFlota debe ser positivo.")
+    @JsonBackReference
     private FlotaEntity flota;
 
     @ManyToMany (fetch = FetchType.EAGER,cascade = CascadeType.MERGE)

@@ -19,20 +19,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/rol")
+@RequestMapping("/api/roles")
 public class RolController {
     @Autowired
     private RoleService roleService;
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<?>  listRoles(@PathVariable Integer page){
+    public ResponseEntity<?>  getAll(@PathVariable Integer page){
         Page<RoleEntity> pageRoles;
         Pageable pageable = PageRequest.of(page, 5);
         GenericResponse genericResponse = new GenericResponse();
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
 
         try {
-            pageRoles = roleService.getAllRoles(pageable);
+            pageRoles = roleService.findAll(pageable);
             if (pageRoles.getContent().isEmpty()) {
                 String str = " No existen roles en la base de datos";
                 genericResponse = genericDataAdapter.createError("1", str);
@@ -49,13 +49,13 @@ public class RolController {
     }
 
     @GetMapping
-    public ResponseEntity<?>  listAllRoles(){
+    public ResponseEntity<?>  getAll(){
         List<RoleEntity> lstRoles;
         GenericResponse genericResponse = new GenericResponse();
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
 
         try {
-            lstRoles = roleService.getRoles();
+            lstRoles = roleService.findAll();
             if (lstRoles.isEmpty()) {
                 String str = " No existen roles en la base de datos";
                 genericResponse = genericDataAdapter.createError("1", str);
@@ -71,6 +71,38 @@ public class RolController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id){
+        GenericResponse genericResponse = new GenericResponse();
+        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
+        try {
+            Optional roleEntity = roleService.findById(id);
+            genericResponse = genericDataAdapter.createData(roleEntity);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            String str = "Error al realizar la consulta en la base de datos"
+                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
+            genericResponse = genericDataAdapter.createError("1", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getRoleByRoleName(@RequestParam String name){
+        GenericResponse genericResponse = new GenericResponse();
+        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
+
+        try {
+            List<RoleEntity> roleEntity = roleService.findByRoleName(name);
+            genericResponse = genericDataAdapter.createData(roleEntity);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            String str = "Error al realizar la consulta en la base de datos"
+                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
+            genericResponse = genericDataAdapter.createError("1", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody RoleEntity role, BindingResult result){
@@ -85,8 +117,8 @@ public class RolController {
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.BAD_REQUEST);
         }
         try {
-            RoleEntity savedRole = roleService.save(role);
-            genericResponse = genericDataAdapter.createData(savedRole);
+            RoleEntity nuevoRol = roleService.create(role);
+            genericResponse = genericDataAdapter.createData(nuevoRol);
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
         } catch (DataAccessException e) {
             String str = "Error al realizar el insert en la base de datos"
@@ -96,49 +128,15 @@ public class RolController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getRoleById(@PathVariable Long id){
-        GenericResponse genericResponse = new GenericResponse();
-        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
-
-        try {
-            Optional roleEntity = roleService.getRoleById(id);
-            genericResponse = genericDataAdapter.createData(roleEntity);
-            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.OK);
-        } catch (DataAccessException e) {
-            String str = "Error al realizar la consulta en la base de datos"
-                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
-            genericResponse = genericDataAdapter.createError("1", str);
-            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/byname/{name}")
-    public ResponseEntity<?> getRoleByRoleName(@PathVariable String name){
-        GenericResponse genericResponse = new GenericResponse();
-        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
-
-        try {
-            List<RoleEntity> roleEntity = roleService.getByRoleName(name);
-            genericResponse = genericDataAdapter.createData(roleEntity);
-            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.OK);
-        } catch (DataAccessException e) {
-            String str = "Error al realizar la consulta en la base de datos"
-                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
-            genericResponse = genericDataAdapter.createError("1", str);
-            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PutMapping("/{id}")
-    public RoleEntity updateRole(@PathVariable Long id,@RequestBody RoleEntity role){
+    public RoleEntity update(@PathVariable Long id,@RequestBody RoleEntity role){
         role.setId(id);
-        return roleService.save(role);
+        return roleService.update(id,role);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRole(@PathVariable Long id){
-        roleService.delete(id);
+    public void delete(@PathVariable Long id){
+        roleService.deleteById(id);
     }
 
 }

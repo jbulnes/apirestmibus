@@ -91,7 +91,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         String password = authCreateUserRequest.password();
         List<String> roleRequest = authCreateUserRequest.roleRequest().roleListName();
 
-        Set<RoleEntity> roleEntitySet = roleRepository.findRoleEntitiesByRoleNameIn(roleRequest)
+        Set<RoleEntity> roleEntitySet = roleRepository.findByRoleNameIn(roleRequest)
                 .stream()
                 .collect(Collectors.toSet());
         if(roleEntitySet.isEmpty()){

@@ -2,7 +2,10 @@ package com.ApiRestMiBus.controller.rest;
 
 import com.ApiRestMiBus.common.adapters.GenericDataAdapter;
 import com.ApiRestMiBus.common.domain.GenericResponse;
+import com.ApiRestMiBus.controller.dto.FlotaDTO;
+import com.ApiRestMiBus.model.entity.EmpresaEntity;
 import com.ApiRestMiBus.model.entity.FlotaEntity;
+import com.ApiRestMiBus.model.service.EmpresaService;
 import com.ApiRestMiBus.model.service.FlotaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +27,12 @@ public class FlotaController {
     @Autowired
     private FlotaService flotaService;
 
+    @Autowired
+    private EmpresaService empresaService;
+
     @GetMapping("/page/{page}")
     public ResponseEntity<?>  getAll(@PathVariable Integer page){
-        Page<FlotaEntity> pageFlotas;
+        Page<FlotaDTO> pageFlotas;
         Pageable pageable = PageRequest.of(page, 5);
         GenericResponse genericResponse = new GenericResponse();
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
@@ -50,7 +56,7 @@ public class FlotaController {
 
     @GetMapping
     public ResponseEntity<?>  getAll(){
-        List<FlotaEntity> lstFlotas;
+        List<FlotaDTO> lstFlotas;
         GenericResponse genericResponse = new GenericResponse();
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
 
@@ -108,7 +114,7 @@ public class FlotaController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody FlotaEntity flota, BindingResult result){
+    public ResponseEntity<?> create(@Valid @RequestBody FlotaDTO flotaDTO, BindingResult result){
         GenericResponse genericResponse = new GenericResponse();
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
 
@@ -121,6 +127,12 @@ public class FlotaController {
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.BAD_REQUEST);
         }
         try {
+            EmpresaEntity empresa = empresaService.findById(flotaDTO.getIdEmpresa())
+                    .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+            FlotaEntity flota =  new FlotaEntity();
+            flota.setNombre(flotaDTO.getNombre());
+            flota.setDescripcion(flotaDTO.getDescripcion());
+            flota.setEmpresa(empresa);
             FlotaEntity nuevaFlota = flotaService.create(flota);
             genericResponse = genericDataAdapter.createData(nuevaFlota);
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
@@ -133,9 +145,36 @@ public class FlotaController {
     }
 
     @PutMapping("/{id}")
-    public FlotaEntity update(@PathVariable Long id,@RequestBody FlotaEntity flota){
-        flota.setId(id);
-        return flotaService.update(id,flota);
+    public ResponseEntity<?> update(@Valid @PathVariable Long id,@RequestBody FlotaDTO flotaDTO, BindingResult result){
+        GenericResponse genericResponse = new GenericResponse();
+        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
+
+        if (result.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            result.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(". "));
+
+            String str = errors.toString();
+            genericResponse = genericDataAdapter.createError("2", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            EmpresaEntity empresa = empresaService.findById(flotaDTO.getIdEmpresa())
+                    .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+            FlotaEntity flota =  new FlotaEntity();
+            FlotaEntity flotaActualizada =  new FlotaEntity();
+            flota.setNombre(flotaDTO.getNombre());
+            flota.setDescripcion(flotaDTO.getDescripcion());
+            flota.setEmpresa(empresa);
+            flota.setId(id);
+            flotaActualizada = flotaService.update(id,flota);
+            genericResponse = genericDataAdapter.createData(flotaActualizada);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
+        } catch (DataAccessException e) {
+            String str = "Error al realizar el update en la base de datos"
+                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
+            genericResponse = genericDataAdapter.createError("1", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -143,4 +182,9 @@ public class FlotaController {
         flotaService.deleteById(id);
     }
 
+    @GetMapping("/by-name")
+    public ResponseEntity<List<FlotaEntity>> getFleetsByName(@RequestParam String name) {
+        List<FlotaEntity> fleets = flotaService.getFleetsWithVehiclesByName(name);
+        return ResponseEntity.ok(fleets);
+    }
 }

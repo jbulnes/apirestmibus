@@ -1,5 +1,6 @@
 package com.ApiRestMiBus.model.service;
 
+import com.ApiRestMiBus.controller.dto.FlotaDTO;
 import com.ApiRestMiBus.model.entity.FlotaEntity;
 import com.ApiRestMiBus.model.repository.FlotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FlotaService {
     @Autowired
     private FlotaRepository flotaRepository;
 
-    public Page<FlotaEntity> findAll(Pageable pageable){
-        return flotaRepository.findAll(pageable);
+    public Page<FlotaDTO> findAll(Pageable pageable){
+        return flotaRepository.findAll(pageable)
+                .map(flota -> new FlotaDTO(
+                        flota.getId(),
+                        flota.getCodigo(),
+                        flota.getNombre(),
+                        flota.getDescripcion(),
+                        flota.getColor(),
+                        flota.getEstado(),
+                        flota.getEmpresa() != null ? flota.getEmpresa().getId() : null,
+                        flota.getEmpresa().getNombre()
+                ));
    }
 
     public Optional<FlotaEntity> findById(Long id){
@@ -31,8 +43,19 @@ public class FlotaService {
         return flotaRepository.findByNombre(name);
     }
 
-    public List<FlotaEntity> findAll(){
-        return flotaRepository.findAll();
+    public List<FlotaDTO> findAll(){
+        return flotaRepository.findAll().stream()
+                .map(flota -> new FlotaDTO(
+                        flota.getId(),
+                        flota.getCodigo(),
+                        flota.getNombre(),
+                        flota.getDescripcion(),
+                        flota.getColor(),
+                        flota.getEstado(),
+                        flota.getEmpresa() != null ? flota.getEmpresa().getId() : null,
+                        flota.getEmpresa().getNombre()
+                ))
+                .collect(Collectors.toList());
     }
 
     public FlotaEntity create(FlotaEntity flota){
@@ -47,4 +70,7 @@ public class FlotaService {
         flotaRepository.deleteById(id);
     }
 
+    public List<FlotaEntity> getFleetsWithVehiclesByName(String nombre) {
+        return flotaRepository.findByNombreWithVehiculos(nombre);
+    }
 }

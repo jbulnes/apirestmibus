@@ -133,9 +133,31 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public EmpresaEntity update(@PathVariable Long id,@RequestBody EmpresaEntity empresa){
-        empresa.setId(id);
-        return empresaService.update(id,empresa);
+    public ResponseEntity<?>  update(@Valid @PathVariable Long id,@RequestBody EmpresaEntity empresa, BindingResult result){
+        GenericResponse genericResponse = new GenericResponse();
+        GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
+
+        if (result.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            result.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(". "));
+
+            String str = errors.toString();
+            genericResponse = genericDataAdapter.createError("2", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            empresa.setId(id);
+            EmpresaEntity empresaActualizada = new EmpresaEntity();
+            empresaActualizada = empresaService.update(id,empresa);
+            genericResponse = genericDataAdapter.createData(empresaActualizada);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
+        }catch (DataAccessException e) {
+            String str = "Error al realizar el update en la base de datos"
+                    + e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage());
+            genericResponse = genericDataAdapter.createError("1", str);
+            return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")
