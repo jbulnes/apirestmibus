@@ -1,4 +1,4 @@
-package com.ApiRestMiBus.model.service.impl;
+package com.ApiRestMiBus.model.service;
 
 import com.ApiRestMiBus.controller.dto.AuthCreateUserRequest;
 import com.ApiRestMiBus.controller.dto.AuthLoginRequest;
@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario "+username+ " no existe"));
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
         userEntity.getRoles()
-                .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
-
+                .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleName()))));
+                //.forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
         userEntity.getRoles().stream()
                 .flatMap(role ->role.getPermissions().stream())
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
@@ -69,7 +70,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = jwtUtils.createToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse(username, "User loged successfuly",accessToken, true);
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        AuthResponse authResponse = new AuthResponse(username, "User loged successfuly",accessToken, true, roles);
 
         return authResponse;
     };
@@ -91,7 +97,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         String password = authCreateUserRequest.password();
         List<String> roleRequest = authCreateUserRequest.roleRequest().roleListName();
 
-        Set<RoleEntity> roleEntitySet = roleRepository.findRoleEntitiesByRoleEnumIn(roleRequest)
+        Set<RoleEntity> roleEntitySet = roleRepository.findByRoleNameIn(roleRequest)
                 .stream()
                 .collect(Collectors.toSet());
         if(roleEntitySet.isEmpty()){
@@ -111,7 +117,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
         userCreated.getRoles()
-                .forEach(roles ->authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(roles.getRoleEnum().name()))));
+                .forEach(roles ->authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(roles.getRoleName()))));
         userCreated.getRoles().stream()
                 .flatMap(roles -> roles.getPermissions().stream())
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
@@ -120,7 +126,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         String accesToken = jwtUtils.createToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse(userCreated.getUsername(), "User created successfully",accesToken, true);
+        List<String> roles = userCreated.getRoles().stream()
+                .map(role -> role.getRoleName()) // Extraer los nombres de los roles
+                .collect(Collectors.toList());
+
+        AuthResponse authResponse = new AuthResponse(userCreated.getUsername(), "User created successfully",accesToken, true, roles);
         return authResponse;
     }
 }
