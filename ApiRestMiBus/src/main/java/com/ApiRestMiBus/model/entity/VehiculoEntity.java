@@ -1,6 +1,7 @@
 package com.ApiRestMiBus.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -49,7 +50,7 @@ public class VehiculoEntity extends BaseEntity{
     private String sim;
 
     @Column(name = "vencimiento_revision_tecnica")
-    private LocalDate vencimientoRevisionTecnica;
+    private String vencimientoRevisionTecnica;
 
     @ManyToOne
     @JoinColumn(name = "id_ruta", nullable = false)
@@ -63,13 +64,13 @@ public class VehiculoEntity extends BaseEntity{
     private String numeroSoat;
 
     @Column(name = "vencimiento_soat")
-    private LocalDate vencimientoSoat;
+    private String vencimientoSoat;
 
     @Column(name="numero_poliza_seguro")
     private String numeroPolizaSeguro;
 
     @Column(name = "vencimiento_poliza")
-    private LocalDate  vencimientoPoliza;
+    private String  vencimientoPoliza;
 
     private String extintor;
 

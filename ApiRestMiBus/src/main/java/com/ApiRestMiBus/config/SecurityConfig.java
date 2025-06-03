@@ -61,6 +61,10 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/api/gps/**").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.PUT, "/api/gps/**").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/api/gps/**").hasAnyRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/geozona/**").hasAnyRole("SUPER_ADMIN", "ADMIN","Administrador");
+                    http.requestMatchers(HttpMethod.GET, "/api/geozona/**").hasAnyRole("SUPER_ADMIN", "ADMIN","Administrador");
+                    http.requestMatchers(HttpMethod.PUT, "/api/geozona/**").hasAnyRole("SUPER_ADMIN", "ADMIN","Administrador");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/geozona/**").hasAnyRole("SUPER_ADMIN", "ADMIN","Administrador");
                     http.requestMatchers("/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html").permitAll();

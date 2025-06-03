@@ -1,9 +1,10 @@
 package com.ApiRestMiBus.model.repository;
 
-import com.ApiRestMiBus.model.entity.GeoZonaEntity;
+import com.ApiRestMiBus.model.entity.GeozonaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GeoZonaRepository extends JpaRepository<GeoZonaEntity, Long> {
+public interface GeozonaRepository extends JpaRepository<GeozonaEntity, Long> {
+
 }

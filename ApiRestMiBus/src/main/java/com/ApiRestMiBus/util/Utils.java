@@ -1,10 +1,14 @@
 package com.ApiRestMiBus.util;
 
+import org.locationtech.jts.geom.*;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class Utils {
     private static SimpleDateFormat formatter;
@@ -72,4 +76,21 @@ public class Utils {
             return null;
         }
     }
+
+    public static Polygon convertirAPolygon(List<List<Double>> puntos) {
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+
+        Coordinate[] coordinates = puntos.stream()
+                .map(p -> new Coordinate(p.get(0), p.get(1))) // [lon, lat]
+                .toArray(Coordinate[]::new);
+
+        // Verificar que el polígono esté cerrado (el primer punto igual al último)
+        if (!coordinates[0].equals2D(coordinates[coordinates.length - 1])) {
+            coordinates = Arrays.copyOf(coordinates, coordinates.length + 1);
+            coordinates[coordinates.length - 1] = coordinates[0]; // cerrar el polígono
+        }
+        LinearRing shell = geometryFactory.createLinearRing(coordinates);
+        return geometryFactory.createPolygon(shell);
+    }
+
 }

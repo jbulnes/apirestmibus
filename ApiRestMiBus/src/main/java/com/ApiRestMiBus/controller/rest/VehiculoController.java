@@ -3,9 +3,11 @@ package com.ApiRestMiBus.controller.rest;
 import com.ApiRestMiBus.common.adapters.GenericDataAdapter;
 import com.ApiRestMiBus.common.domain.GenericResponse;
 import com.ApiRestMiBus.controller.dto.VehiculoDTO;
+import com.ApiRestMiBus.model.entity.EventoVehiculoEntity;
 import com.ApiRestMiBus.model.entity.FlotaEntity;
 import com.ApiRestMiBus.model.entity.RutaEntity;
 import com.ApiRestMiBus.model.entity.VehiculoEntity;
+import com.ApiRestMiBus.model.service.EventoVehiculoService;
 import com.ApiRestMiBus.model.service.FlotaService;
 import com.ApiRestMiBus.model.service.RutaService;
 import com.ApiRestMiBus.model.service.VehiculoService;
@@ -38,8 +40,11 @@ public class VehiculoController {
     @Autowired
     private RutaService rutaService;
 
+    @Autowired
+    private EventoVehiculoService eventoVehiculoService;
+
     @GetMapping("/page/{page}")
-    public ResponseEntity<?>  getAll(@PathVariable Integer page){
+    public ResponseEntity<?>  getAllPage(@PathVariable Integer page){
         logger.info("Inicio método getAll");
         Page<VehiculoDTO> pageVehiculos;
         Pageable pageable = PageRequest.of(page, 5);
@@ -72,6 +77,7 @@ public class VehiculoController {
         GenericDataAdapter genericDataAdapter = new GenericDataAdapter();
 
         try {
+            logger.info("Iniciando consulta para obtener todos los vehículos");
             lstVehiculos = vehiculoService.findAll();
             if (lstVehiculos.isEmpty()) {
                 String str = " No existen flotas en la base de datos";
@@ -79,6 +85,7 @@ public class VehiculoController {
                 return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.NOT_FOUND);
             }
             genericResponse = genericDataAdapter.createData(lstVehiculos);
+            logger.info("Consulta exitosa. Se encontraron {} vehículos", lstVehiculos.size());
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.OK);
         } catch (DataAccessException e) {
             String str = "Error al realizar la consulta en la base de datos"
@@ -149,13 +156,13 @@ public class VehiculoController {
             vehiculo.setModelo(vehiculoDTO.getModelo());
             vehiculo.setImei(vehiculoDTO.getImei());
             vehiculo.setSim(vehiculoDTO.getSim());
-            vehiculo.setVencimientoRevisionTecnica(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoRevisionTecnica()));
+            vehiculo.setVencimientoRevisionTecnica(vehiculoDTO.getVencimientoRevisionTecnica());
             vehiculo.setRuta(ruta);
             vehiculo.setDiesel(vehiculoDTO.getDiesel());
             vehiculo.setNumeroSoat(vehiculoDTO.getNumeroSoat());
-            vehiculo.setVencimientoSoat(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoSoat()));
+            vehiculo.setVencimientoSoat(vehiculoDTO.getVencimientoSoat());
             vehiculo.setNumeroPolizaSeguro(vehiculoDTO.getNumeroPolizaSeguro());
-            vehiculo.setVencimientoPoliza(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoPoliza()));
+            vehiculo.setVencimientoPoliza(vehiculoDTO.getVencimientoPoliza());
             vehiculo.setExtintor(vehiculoDTO.getExtintor());
             vehiculo.setNota(vehiculoDTO.getNota());
             VehiculoEntity nuevoVehiculo = vehiculoService.create(vehiculo);
@@ -197,13 +204,13 @@ public class VehiculoController {
             vehiculo.setModelo(vehiculoDTO.getModelo());
             vehiculo.setImei(vehiculoDTO.getImei());
             vehiculo.setSim(vehiculoDTO.getSim());
-            vehiculo.setVencimientoRevisionTecnica(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoRevisionTecnica()));
+            vehiculo.setVencimientoRevisionTecnica(vehiculoDTO.getVencimientoRevisionTecnica());
             vehiculo.setRuta(ruta);
             vehiculo.setDiesel(vehiculoDTO.getDiesel());
             vehiculo.setNumeroSoat(vehiculoDTO.getNumeroSoat());
-            vehiculo.setVencimientoSoat(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoSoat()));
+            vehiculo.setVencimientoSoat(vehiculoDTO.getVencimientoSoat());
             vehiculo.setNumeroPolizaSeguro(vehiculoDTO.getNumeroPolizaSeguro());
-            vehiculo.setVencimientoPoliza(Utils.parseDateOnlyString(vehiculoDTO.getVencimientoPoliza()));
+            vehiculo.setVencimientoPoliza(vehiculoDTO.getVencimientoPoliza());
             vehiculo.setExtintor(vehiculoDTO.getExtintor());
             vehiculo.setNota(vehiculoDTO.getNota());
             vehiculo.setId(id);
@@ -283,4 +290,13 @@ public class VehiculoController {
             return new ResponseEntity<>(genericResponse, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/ultima-ubicacion/{imei}")
+    public ResponseEntity<EventoVehiculoEntity> obtenerUltimaUbicacion(@PathVariable String imei) {
+        return eventoVehiculoService.obtenerUltimaUbicacion(imei)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+
+    }
+
 }
