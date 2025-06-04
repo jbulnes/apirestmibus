@@ -1,3 +1,0 @@
-FROM openjdk:17-jdk-alpine
-COPY target/ApiRestColegiatura.jar java-app.jar
-ENTRYPOINT ["java", "-jar", "java-app.jar"]
