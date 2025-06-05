@@ -45,7 +45,7 @@ public class RutaController {
         try {
             pageRutas = rutaService.findAll(pageable);
             if (pageRutas.getContent().isEmpty()) {
-                String str = " No existen roles en la base de datos";
+                String str = " No existen rutas en la base de datos";
                 genericResponse = genericDataAdapter.createError("1", str);
                 return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.NOT_FOUND);
             }
@@ -70,7 +70,7 @@ public class RutaController {
         try {
             lstRutas = rutaService.findAll();
             if (lstRutas.isEmpty()) {
-                String str = " No existen flotas en la base de datos";
+                String str = " No existen rutas en la base de datos";
                 genericResponse = genericDataAdapter.createError("1", str);
                 return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.NOT_FOUND);
             }

@@ -80,7 +80,7 @@ public class VehiculoController {
             logger.info("Iniciando consulta para obtener todos los vehículos");
             lstVehiculos = vehiculoService.findAll();
             if (lstVehiculos.isEmpty()) {
-                String str = " No existen flotas en la base de datos";
+                String str = " No existen vehiculos en la base de datos";
                 genericResponse = genericDataAdapter.createError("1", str);
                 return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.NOT_FOUND);
             }
@@ -194,7 +194,7 @@ public class VehiculoController {
         }
         try {
             RutaEntity ruta = rutaService.findById(vehiculoDTO.getIdRuta())
-                    .orElseThrow(() -> new RuntimeException("Flota no encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
             VehiculoEntity vehiculo =  new VehiculoEntity();
             VehiculoEntity vehiculoActualizado =  new VehiculoEntity();
             vehiculo.setNumeroPlaca(vehiculoDTO.getNumeroPlaca());

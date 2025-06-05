@@ -67,13 +67,6 @@ public class GeozonaService {
 
     @Transactional
     public GeozonaEntity actualizar(Long id, GeozonaEntity entity) {
-        /*GeozonaEntity geo = geozonaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe geozona con id: " + id));
-
-        Polygon polygon = convertirAPolygon(dto.getPuntos());
-        geo.setTipo(dto.getTipo());
-        geo.setArea(polygon);*/
-
         return geozonaRepository.save(entity);
     }
 
