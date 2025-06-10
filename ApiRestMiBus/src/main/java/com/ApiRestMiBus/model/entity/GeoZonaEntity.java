@@ -12,7 +12,7 @@ import org.locationtech.jts.geom.Polygon;
 @Getter
 @NoArgsConstructor
 @Table(name = "geozona")
-public class GeozonaEntity extends BaseEntity {
+public class GeoZonaEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

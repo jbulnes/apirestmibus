@@ -2,7 +2,7 @@ package com.ApiRestMiBus.model.service;
 
 import com.ApiRestMiBus.controller.dto.RutaDTO;
 import com.ApiRestMiBus.exception.EntityNotFoundException;
-import com.ApiRestMiBus.model.entity.FlotaEntity;
+
 import com.ApiRestMiBus.model.entity.RutaEntity;
 import com.ApiRestMiBus.model.repository.RutaRepository;
 import lombok.extern.slf4j.Slf4j;

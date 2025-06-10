@@ -1,8 +1,7 @@
 package com.ApiRestMiBus.model.service;
 
 import com.ApiRestMiBus.controller.dto.FlotaDTO;
-import com.ApiRestMiBus.model.entity.FlotaEntity;
-import com.ApiRestMiBus.model.repository.FlotaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

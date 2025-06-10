@@ -1,12 +1,8 @@
 package com.ApiRestMiBus.model.service;
 
-import com.ApiRestMiBus.controller.dto.CoordenadaDTO;
 import com.ApiRestMiBus.controller.dto.GeozonaResponseDTO;
-import com.ApiRestMiBus.controller.dto.RutaDTO;
-import com.ApiRestMiBus.controller.rest.RutaController;
-import com.ApiRestMiBus.model.dto.GeozonaDTO;
-import com.ApiRestMiBus.model.entity.GeozonaEntity;
-import com.ApiRestMiBus.model.repository.GeozonaRepository;
+import com.ApiRestMiBus.model.entity.GeoZonaEntity;
+import com.ApiRestMiBus.model.repository.GeoZonaRepository;
 import jakarta.persistence.EntityManager;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
@@ -23,21 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-public class GeozonaService {
-    private static final Logger logger = LoggerFactory.getLogger(GeozonaService.class);
+public class GeoZonaService {
+    private static final Logger logger = LoggerFactory.getLogger(GeoZonaService.class);
 
     @Autowired
-    private GeozonaRepository geozonaRepository;
+    private GeoZonaRepository geozonaRepository;
 
     @Autowired
     private EntityManager entityManager;
 
     private final GeometryFactory geometryFactory;
 
-    public GeozonaService(GeozonaRepository geozonaRepository) {
+    public GeoZonaService(GeoZonaRepository geozonaRepository) {
         this.geozonaRepository = geozonaRepository;
         this.geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
     }
@@ -52,21 +47,21 @@ public class GeozonaService {
                 .map(this::toResponseDTO);
     }
 
-    public List<GeozonaEntity> findAllGeozonas() {
+    public List<GeoZonaEntity> findAllGeozonas() {
         return geozonaRepository.findAll();
     }
 
 
-    public GeozonaEntity guardar(GeozonaEntity entity) {
+    public GeoZonaEntity guardar(GeoZonaEntity entity) {
         return geozonaRepository.save(entity);
     }
 
-    public List<GeozonaEntity> listarTodas() {
+    public List<GeoZonaEntity> listarTodas() {
         return geozonaRepository.findAll();
     }
 
     @Transactional
-    public GeozonaEntity actualizar(Long id, GeozonaEntity entity) {
+    public GeoZonaEntity actualizar(Long id, GeoZonaEntity entity) {
         return geozonaRepository.save(entity);
     }
 
@@ -86,11 +81,11 @@ public class GeozonaService {
         return geometryFactory.createPolygon(shell);
     }
 
-    public Optional<GeozonaEntity> findById(Long id) {
+    public Optional<GeoZonaEntity> findById(Long id) {
         return geozonaRepository.findById(id);
     }
 
-    private GeozonaResponseDTO toResponseDTO(GeozonaEntity entity) {
+    private GeozonaResponseDTO toResponseDTO(GeoZonaEntity entity) {
         String geoJsonString = "";
         try {
             geoJsonString = new GeoJsonWriter().write(entity.getArea());
@@ -108,9 +103,9 @@ public class GeozonaService {
         );
     }
 
-    public Optional<GeozonaEntity> findGeozonaByPoint(double lat, double lon) {
+    public Optional<GeoZonaEntity> findGeozonaByPoint(double lat, double lon) {
         Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
-        List<GeozonaEntity> geozonas = geozonaRepository.findAll();
+        List<GeoZonaEntity> geozonas = geozonaRepository.findAll();
 
         return geozonas.stream()
                 .filter(g -> g.getArea().contains(point))

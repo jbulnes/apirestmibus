@@ -1,10 +1,8 @@
 package com.ApiRestMiBus.controller.dto;
 
-import com.ApiRestMiBus.model.entity.GeozonaEntity;
+import com.ApiRestMiBus.model.entity.GeoZonaEntity;
 import lombok.*;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +19,7 @@ public class GeozonaResponseDTO {
     private String nombreRuta;
     private String estado;
 
-    public GeozonaResponseDTO(GeozonaEntity entity) {
+    public GeozonaResponseDTO(GeoZonaEntity entity) {
         this.id = entity.getId();
         this.nombre = entity.getNombre();
         this.idRuta = entity.getRuta().getId();

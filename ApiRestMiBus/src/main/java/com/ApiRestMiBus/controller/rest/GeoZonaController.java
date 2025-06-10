@@ -3,14 +3,12 @@ package com.ApiRestMiBus.controller.rest;
 import com.ApiRestMiBus.common.adapters.GenericDataAdapter;
 import com.ApiRestMiBus.common.domain.GenericResponse;
 import com.ApiRestMiBus.controller.dto.GeozonaResponseDTO;
-import com.ApiRestMiBus.controller.dto.RutaDTO;
 import com.ApiRestMiBus.model.dto.GeozonaDTO;
 import com.ApiRestMiBus.model.entity.EventoVehiculoEntity;
-import com.ApiRestMiBus.model.entity.GeozonaEntity;
+import com.ApiRestMiBus.model.entity.GeoZonaEntity;
 import com.ApiRestMiBus.model.entity.RutaEntity;
-import com.ApiRestMiBus.model.entity.VehiculoEntity;
 import com.ApiRestMiBus.model.service.EventoVehiculoService;
-import com.ApiRestMiBus.model.service.GeozonaService;
+import com.ApiRestMiBus.model.service.GeoZonaService;
 import com.ApiRestMiBus.model.service.RutaService;
 import com.ApiRestMiBus.util.Utils;
 import jakarta.validation.Valid;
@@ -36,11 +34,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/geozona")
-public class GeozonaController {
-    private static final Logger logger = LoggerFactory.getLogger(GeozonaController.class);
+public class GeoZonaController {
+    private static final Logger logger = LoggerFactory.getLogger(GeoZonaController.class);
 
     @Autowired
-    private GeozonaService geozonaService;
+    private GeoZonaService geozonaService;
 
     @Autowired
     private EventoVehiculoService eventoVehiculoService;
@@ -95,14 +93,14 @@ public class GeozonaController {
             }
             RutaEntity ruta = rutaService.findById(dto.getIdRuta())
                     .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
-            GeozonaEntity geozonaEntity = new GeozonaEntity();
+            GeoZonaEntity geozonaEntity = new GeoZonaEntity();
             geozonaEntity.setNombre(dto.getNombre());
             geozonaEntity.setTipo(dto.getTipo());
             geozonaEntity.setRuta(ruta);
             Polygon polygon = Utils.convertirAPolygon(dto.getPuntos());
             geozonaEntity.setArea(polygon);
 
-            GeozonaEntity nuevaGeozona = geozonaService.guardar(geozonaEntity);
+            GeoZonaEntity nuevaGeozona = geozonaService.guardar(geozonaEntity);
             genericResponse = genericDataAdapter.createData(nuevaGeozona);
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
     }catch (
@@ -140,14 +138,14 @@ public class GeozonaController {
             }
             RutaEntity ruta = rutaService.findById(dto.getIdRuta())
                     .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
-            GeozonaEntity geozonaEntity = new GeozonaEntity();
+            GeoZonaEntity geozonaEntity = new GeoZonaEntity();
             geozonaEntity.setNombre(dto.getNombre());
             geozonaEntity.setTipo(dto.getTipo());
             geozonaEntity.setRuta(ruta);
             Polygon polygon = Utils.convertirAPolygon(dto.getPuntos());
             geozonaEntity.setArea(polygon);
             geozonaEntity.setId(id);
-            GeozonaEntity geozonaActualizada = geozonaService.actualizar(id, geozonaEntity);
+            GeoZonaEntity geozonaActualizada = geozonaService.actualizar(id, geozonaEntity);
             genericResponse = genericDataAdapter.createData(geozonaActualizada);
             return new ResponseEntity<GenericResponse>(genericResponse, HttpStatus.CREATED);
         }catch (DataAccessException e) {
@@ -188,9 +186,9 @@ public class GeozonaController {
         System.out.println("   Longitud: " + lon);
 
         try {
-            Optional<GeozonaEntity> geozonaOpt = geozonaService.findGeozonaByPoint(lat, lon);
+            Optional<GeoZonaEntity> geozonaOpt = geozonaService.findGeozonaByPoint(lat, lon);
             if (geozonaOpt.isPresent()) {
-                GeozonaEntity geo = geozonaOpt.get();
+                GeoZonaEntity geo = geozonaOpt.get();
 
                 Map<String, Object> response = new HashMap<>();
                 response.put("inside", true);

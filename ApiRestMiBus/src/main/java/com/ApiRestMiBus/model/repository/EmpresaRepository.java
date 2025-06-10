@@ -1,6 +1,6 @@
 package com.ApiRestMiBus.model.repository;
 
-import com.ApiRestMiBus.model.entity.AEmpresaEntity;
+
 import com.ApiRestMiBus.model.entity.EmpresaEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

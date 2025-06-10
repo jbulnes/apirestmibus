@@ -4,7 +4,7 @@ import com.ApiRestMiBus.common.adapters.GenericDataAdapter;
 import com.ApiRestMiBus.common.domain.GenericResponse;
 import com.ApiRestMiBus.model.dto.EmpresaDTO;
 import com.ApiRestMiBus.model.dto.EmpresaMapper;
-import com.ApiRestMiBus.model.entity.AEmpresaEntity;
+
 import com.ApiRestMiBus.model.entity.EmpresaEntity;
 import com.ApiRestMiBus.model.service.EmpresaService;
 import jakarta.validation.Valid;

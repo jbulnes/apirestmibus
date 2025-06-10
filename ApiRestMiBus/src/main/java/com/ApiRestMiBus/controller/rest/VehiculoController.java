@@ -4,7 +4,7 @@ import com.ApiRestMiBus.common.adapters.GenericDataAdapter;
 import com.ApiRestMiBus.common.domain.GenericResponse;
 import com.ApiRestMiBus.controller.dto.VehiculoDTO;
 import com.ApiRestMiBus.model.entity.EventoVehiculoEntity;
-import com.ApiRestMiBus.model.entity.FlotaEntity;
+
 import com.ApiRestMiBus.model.entity.RutaEntity;
 import com.ApiRestMiBus.model.entity.VehiculoEntity;
 import com.ApiRestMiBus.model.service.EventoVehiculoService;
