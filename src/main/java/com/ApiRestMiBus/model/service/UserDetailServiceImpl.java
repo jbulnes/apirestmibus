@@ -1,5 +1,7 @@
 package com.ApiRestMiBus.model.service;
 
+import com.ApiRestMiBus.common.exception.DuplicateUsernameException;
+import com.ApiRestMiBus.common.exception.RolesNotFoundException;
 import com.ApiRestMiBus.controller.dto.AuthCreateUserRequest;
 import com.ApiRestMiBus.controller.dto.AuthLoginRequest;
 import com.ApiRestMiBus.controller.dto.AuthResponse;
@@ -95,13 +97,19 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public AuthResponse createUser(AuthCreateUserRequest authCreateUserRequest){
         String username = authCreateUserRequest.username();
         String password = authCreateUserRequest.password();
+
+        if (userRepository.existsByUsername(username)) {
+            throw new DuplicateUsernameException("El nombre de usuario '" + username + "' ya está registrado.");
+        }
+
         List<String> roleRequest = authCreateUserRequest.roleRequest().roleListName();
 
         Set<RoleEntity> roleEntitySet = roleRepository.findByRoleNameIn(roleRequest)
                 .stream()
                 .collect(Collectors.toSet());
-        if(roleEntitySet.isEmpty()){
-            throw new IllegalArgumentException("The roles specified does not exist.");
+
+        if (roleEntitySet.isEmpty()) {
+            throw new RolesNotFoundException("Los roles especificados no existen.");
         }
 
         UserEntity userEntity = UserEntity.builder()

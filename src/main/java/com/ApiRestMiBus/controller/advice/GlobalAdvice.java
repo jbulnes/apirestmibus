@@ -1,9 +1,7 @@
 package com.ApiRestMiBus.controller.advice;
 
 import com.ApiRestMiBus.common.domain.ErrorInfo;
-import com.ApiRestMiBus.common.exception.DoesNotExistCardException;
-import com.ApiRestMiBus.common.exception.DoesNotExistTypeOperationException;
-import com.ApiRestMiBus.common.exception.InsufficientFundsException;
+import com.ApiRestMiBus.common.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -91,6 +89,24 @@ public class GlobalAdvice {
                 .description("El formato del JSON enviado no es válido. Verifica la estructura y los campos.")
                 .build();
 
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ResponseEntity<ErrorInfo> handleDuplicateUsernameException(DuplicateUsernameException ex) {
+        ErrorInfo error = ErrorInfo.builder()
+                .code(ex.getCode())
+                .description(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT); // 409 Conflict
+    }
+
+    @ExceptionHandler(RolesNotFoundException.class)
+    public ResponseEntity<ErrorInfo> handleRolesNotFoundException(RolesNotFoundException ex) {
+        ErrorInfo error = ErrorInfo.builder()
+                .code("ROLES_NOT_FOUND")
+                .description(ex.getMessage())
+                .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
