@@ -86,9 +86,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new BadCredentialsException("Invalid Username or password");
         }
 
-        System.out.println("Contraseña ingresada: " + password);
-        System.out.println("Contraseña en BD: " + userDetails.getPassword());
-
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new BadCredentialsException("Invalid password");
         }
